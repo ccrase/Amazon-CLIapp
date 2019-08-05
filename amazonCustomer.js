@@ -2,6 +2,7 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 const colors = require('colors');
+const Table = require('cli-table');
 //find library that formats query results in table 
 
 //sql connection
@@ -21,8 +22,14 @@ connection.connect(function(err){
 function start(){
     connection.query("SELECT item_id, product_name, price FROM products", function(err, res) {
         if (err) throw err;
-        // Log all results of the SELECT statement
-        console.log(res);
+        //format table
+        const table = new Table({
+            head: ['Item ID'.yellow,'Product Name'.yellow, 'Price'.yellow]
+        });
+        for(var i = 0; i < res.length; i++){
+            table.push([res[i].item_id, res[i].product_name, res[i].price]);
+        };
+        console.log(table.toString());
         runInquirer();
       });
 };
@@ -40,7 +47,6 @@ function runInquirer(){
             message: 'How many would you like to purchase?',
         }
     ]).then(answers => {
-        console.log(answers);
         checkQuantity(answers);
     });
 };
@@ -54,7 +60,7 @@ function checkQuantity(answers){
         var currentStock = res[0].stock_quantity;
         if(currentStock >= userQuantity){
             //proceed to checkout
-            console.log("YAY! proceed".blue);
+            console.log("You may proceed. Your product is in stock".green);
             checkout(currentStock, userProduct_id, userQuantity);
         }else{
             console.log("Insufficient Quantity! Amazon only carries ".red + currentStock + " amount.".red);
@@ -76,9 +82,19 @@ function showPurchase(userProduct_id, userQuantity){
         var product = res[0].product_name;
         var itemPrice = res[0].price;
         var totalPrice = itemPrice * userQuantity;
-
+        updateTotalSales(totalPrice, userProduct_id)
         console.log("Thank you for shopping with Amazon CLI.")
-        console.log("You purchased "+userQuantity + " "+ product + ". Your total is $" + totalPrice);
+        console.log("You purchased "+userQuantity + " "+ product + ".");
+        console.log("Your total is $" + totalPrice);
     });
-    connection.end();
+
+    function updateTotalSales(totalPrice, userProduct_id){
+        var sql= 'UPDATE products SET product_sales = ? WHERE item_id = ?';
+        var values = [totalPrice, userProduct_id];
+
+        connection.query(sql, values, function(err, res, fields){
+            if(err) throw err;
+        });
+        connection.end();
+    };
 };

@@ -24,3 +24,13 @@ VALUES ("L.O.L. Suprise Confetti Pop Doll", "Toys & Games", 29.74, 5000 ),
 ("Native Jefferson Slip on Shoes","Clothing, Shoes & Jewelry",37.63, 15000),
 ("Earth Friendly Products Window Cleaner with Vinegar", "Household Products", 18.54, 20000),
 ("ODODOS High Waist Pocket 4-Way Stretch Leggings", "Clothing, Shoes & Jewelry", 15.98, 10000);	
+
+CREATE TABLE departments(
+	department_id INT NOT NULL AUTO_INCREMENT,
+    department_name VARCHAR(200) NOT NULL,
+    over_head_costs FLOAT(13,2) NOT NULL,
+    
+    PRIMARY KEY(department_id)
+); 
+
+ALTER TABLE products ADD product_sales FLOAT(13,2);
