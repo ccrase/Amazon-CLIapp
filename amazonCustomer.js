@@ -77,7 +77,8 @@ function showPurchase(userProduct_id, userQuantity){
         var itemPrice = res[0].price;
         var totalPrice = itemPrice * userQuantity;
 
-        console.log("Thank you for shopping with us. You purchased " + product + ". Your total is " + totalPrice);
+        console.log("Thank you for shopping with Amazon CLI.")
+        console.log("You purchased "+userQuantity + " "+ product + ". Your total is $" + totalPrice);
     });
     connection.end();
 };
