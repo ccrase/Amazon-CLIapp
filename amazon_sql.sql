@@ -34,3 +34,11 @@ CREATE TABLE departments(
 ); 
 
 ALTER TABLE products ADD product_sales FLOAT(13,2);
+
+INSERT INTO departments (department_name, over_head_costs) VALUES ('Toys & Games', 10000);
+INSERT INTO departments (department_name, over_head_costs) VALUES ('Household Products', 15000);
+INSERT INTO departments (department_name, over_head_costs) VALUES ('Electronics', 20000);
+INSERT INTO departments (department_name, over_head_costs) VALUES ('Video Games', 40000);
+INSERT INTO departments (department_name, over_head_costs) VALUES ('Books', 5000);
+INSERT INTO departments (department_name, over_head_costs) VALUES ('Clothing, Shoes & Jewelry', 8000);
+
