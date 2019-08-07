@@ -76,26 +76,58 @@ function viewInventory(){
     })
 };
 
+
 function addInventory(){
-    let products = [];
-    connection.query('SELECT product_name FROM products;', function(err, res, fields){
+    connection.query('SELECT item_id, product_name FROM products;', function(err, res, fields, products){
         if(err) throw err;
-        for(var i=0; i <res.length; i++){
-            products.push(res[i].product_name);
-        };
-        connection.end();
-    });
-    inquirer.prompt([
-        {
-            type: 'list',
-            name: 'userChoice',
-            message: 'Which product would you like to buy inventory for?',
-            choices: products //NEED TO ACCESS VALUES FROM PRODUCTS
-        }
-    ]).then(choice => {
-        console.log(choice);
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'userChoice',
+                message: 'Which product would you like to buy inventory for?',
+                choices: function(){
+                    let products = [];
+                    for(var i=0; i <res.length; i++){
+                        products.push(res[i].product_name);
+                    };
+                 return products
+                }
+            
+            }
+        ]).then(choice => {
+            console.log(choice);
+            buyInventory(choice.userChoice)
+        });
     });
 };
+function buyInventory(name){
+    connection.query("SELECT stock_quantity FROM products WHERE product_name = ?", [name], function(err, res){
+        if(err) throw err;
+        var currentInv = res[0].stock_quantity;
+
+        inquirer.prompt([
+            {
+                type: 'input',
+                name: 'newinventory',
+                message: 'How much inventory would you like to add?',
+            }
+        ]).then(answer => {
+            var newInv = answer.newinventory;
+            var totalInv = currentInv + newInv
+            var sql = "UPDATE products SET stock_quantity = ? WHERE product_name = ?";
+            var values = [
+                [totalInv, name]
+            ];
+            connection.query(sql, [values], function(err, res){
+                if(err) throw err;
+                console.log("Inventory successfully updated.".green);
+                connection.end();
+            });
+    
+        });
+    });
+};
+
 
 function newProduct(){
     inquirer.prompt([

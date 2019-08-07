@@ -38,7 +38,7 @@ function start(){
 };
 
 function viewSalesByDept(){
-    connection.query("SELECT departments.department_id, departments.department_name, departments.over_head_costs, products.product_sales, departments.over_head_costs - products.product_sales AS total_profit FROM departments JOIN products ON departments.department_name = products.department_name;", function(err, res, fields){
+    connection.query("SELECT departments.department_id, departments.department_name, departments.over_head_costs, products.product_sales, departments.over_head_costs - products.product_sales AS total_profit FROM departments JOIN products ON departments.department_name = products.department_name GROUP BY departments.department_name;", function(err, res, fields){
         if(err) throw err;
         const table = new Table({
             head: ['Dep. ID'.yellow,'Name'.yellow, 'Overhead'.yellow, 'Sales'.yellow, 'Total Profit'.yellow]
